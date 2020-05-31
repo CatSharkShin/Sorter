@@ -16,17 +16,6 @@ if len(sys.argv) == 1:
           "\n-app : Sorts applications"
           "\n-c : Sorts code files"
           "\n-r : Resets everything"
-        "\n\nLeírás: Ez a program fájlok rendezésére alkalmas, fájlkiterjesztés alapján csoportosítja oket mappákba. Ezeket a mappákat szükségszerűen létre is hozza"
-          "\n\nOsszegzés: sorter.py [OPCIO]..."
-          "\n\nOpciók:"
-          "\n-a : Minden fájltípus kezelése"
-          "\n-i : Képek kezelése"
-          "\n-t : Szöveg fájlok kezelése"
-          "\n-v : Videók kezelése"
-          "\n-s : Hangfájlok kezelése"
-          "\n-app : Alkalmazások kezelése"
-          "\n-c : Kód fájlok kezelése"
-          "\n-r : Minden visszaállítása"
           )
 else:
     current = os.getcwd()
@@ -60,8 +49,7 @@ else:
         print("Checking completed")
 
         print("Sorting the files...")
-
-        for file in [file for file in files if not os.path.isdir(file) and not file == __file__]:
+        for file in [file for file in files if not os.path.isdir(file) and not file == os.path.basename(__file__)]:
             dest = ""
             if '-i' in args or '-a' in args:
                 for ex in images:
