@@ -1,0 +1,61 @@
+i:
+  name: Images
+  ex:
+    - .jpeg
+    - .png
+    - .jpg
+    - .gif
+  desc: Sorts images
+
+t:
+  name: Text
+  ex:
+    - .doc
+    - .txt
+    - .pdf
+    - .xlsx
+    - .docx
+    - .xls
+    - .rtf
+  desc: Sorts text
+
+v:
+  name: Videos
+  ex:
+    - .mp4
+    - .mlv
+    - .mov
+  desc: Sorts videos
+
+s:
+  name: Sounds
+  ex:
+    - .mp3
+    - .wav
+    - .m4a
+  desc: Sorts sounds
+
+p:
+  name: Applications
+  ex:
+    - .exe
+    - .lnk
+  desc: Sorts applications
+
+c:
+  name: Codes
+  ex:
+    - .c
+    - .py
+    - .java
+    - .cpp
+    - .js
+    - .html
+    - .css
+    - .php
+  desc: Sorts codes
+tor:
+  name: Torrent
+  ex:
+    - .torrent
+  desc: Sorts torrent files
