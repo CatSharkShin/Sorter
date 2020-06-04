@@ -38,6 +38,7 @@ Run the .exe, type -h(default) for help
 ```
 python sorter.py
 ```
+or
 ```
 ./sorter.py
 ```
