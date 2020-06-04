@@ -1,11 +1,43 @@
 # Sorter
-sorter.py needs config.yml and filters.yml
 
-oldosorter.py runs on its own, it uses arguments
+##Sorter.py
 
-the exe dir contains an exe and the two config files it needs
+###Description
+sorter.py uses arguments, run it without any to see the manual
 
+###How to Run
+*You need Python
+```
+python sorter.py [args]
+```
 
-config.yml contains essential settings like the exit,all,other args
+###Examples
+sorts every file
+```
+python sorter.py -a
+```
+on linux you can do:
+```
+./sorter.py -a
+```
+to reset:(you can add -i -s etc to only reset those)
+```
+python sorter.py -r
+```
 
-filters.yml contains the filters that you can edit or add more
+##Exe Dir
+###Description
+* config.yml - essential args such as reset, exit
+* filters.yml - sorter.exe uses this to make folders and to filter the files. Priority:order
+* sorter.exe - This does the magic
+###How to Run
+Run the .exe, type -h(default) for help
+
+##py with config files
+###Same as the exe you but you can run it as:
+```
+python sorter.py
+```
+```
+./sorter.py
+```

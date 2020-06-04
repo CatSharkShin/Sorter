@@ -1,120 +1,121 @@
 #!/usr/bin/env python3
+import os,shutil,sys,textwrap
 
-import yaml,os,shutil,sys,subprocess
-with open("config.yml", "r") as ymlfile:
-    cfg = yaml.safe_load(ymlfile)
-with open("filters.yml", "r") as ymlfile:
-    dirs = yaml.safe_load(ymlfile)
+args = str(sys.argv[1:])
+#Arg debug line:
+#print ("Arg count: "+str(len(sys.argv))+"Args list: %s " % args)
 
-
-#exit = cfg['exit']
-all = cfg['all']
-other = cfg['other']
-#help = cfg['help']
-#reset = cfg['reset']
-
-current = os.getcwd()
-
-
-def help():
+#These are the 'all' and 'rest' arguments, change them as you like
+all = '-a'
+other = {
+    "arg": '-o',
+    "name": "Other",
+    "desc": "Description of the filter"
+}
+# Add new filters as you please! It is dynamic
+dirs = {
+    "-i": {
+        "name": "Images",
+        "ex": [".jpeg", ".png", ".jpg", ".gif"],
+        "desc": "Sorts images"
+    },
+    "-t": {
+        "name": "Text",
+        "ex": [".doc", ".txt", ".pdf", ".xlsx", ".docx", ".xls", ".rtf"],
+        "desc": "Sorts text files"
+    },
+    "-v": {
+        "name": "Videos",
+        "ex": [".mp4", ".mkv", ".mov"],
+        "desc": "Sorts videos"
+    },
+    "-s": {
+        "name": "Sounds",
+        "ex": [".mp3", ".wav", ".m4a"],
+        "desc": "Sorts sounds"
+    },
+    "-p": {
+        "name": "Applications",
+        "ex": [".exe", ".lnk"],
+        "desc": "Sorts applications"
+    },
+    "-c": {
+        "name": "Codes",
+        "ex": [".c", ".py", ".java", ".cpp", ".js", ".html", ".css", ".php",".yml",".ini"],
+        "desc": "Sorts code files"
+    }
+}
+#Prints out a man if you dont give it any arguments
+if len(sys.argv) == 1:
     print("\nDescription: This script sorts files in the directory it is in by file extension. It also creates directories needed for the sort"
-          "\n\nSynopsis: sorter.py [OPTION]...")
-    options()
-def options():
-    print("\n\nOptions:")
-    print("-"+all + ": " + "Sorts every file")
-    print("-"+cfg['reset']+ ": " +"Resets given filters")
-    print("-"+cfg['exit']+ ": Exits")
-    print("-"+other['arg'] + ": " + " Puts files with unknown file extensions in another dictionary\n")
+          "\n\nSynopsis: sorter.py [OPTION]..."
+          "\n\nOptions:"
+          )
+    print(all+": "+"Sorts every file")
+    print(other['arg']+": "+" puts files with unknown file extensions in another dictionary")
     for dir in dirs:
-        print("-"+dir + ": " + dirs[dir]['desc'])
+        print(dir+": "+dirs[dir]['desc']+" "+str(dirs[dir]['ex']))
+else:
+    #
+    current = os.getcwd()
+    files=os.listdir(current)
 
-def reset():
-    print("Resetting files...")
-    doall = all in args
-    if other['arg'] in args or doall:
-        tomove = os.listdir(os.path.join(current,other['name']))
-        for f in tomove:
-            try:
-                shutil.move(os.path.join(current,other['name'],f),current)
-            except OSError as e:
-                print("Error: %s : %s" % (other['name'], e.strerror))
-        try:
-            os.rmdir(other['name'])
-        except OSError as e:
-            print("Error: %s : %s" % (dirs[dir]['name'], e.strerror))
-    for dir in dirs:
-        if os.path.isdir(dirs[dir]['name']) and (dir in args or doall):
-            tomove = os.listdir(os.path.join(current,dirs[dir]['name']))
+    if '-r' in args:
+        print("Resetting files...")
+        doall = len(sys.argv) == 2
+        if os.path.isdir(other['name']) and (other['arg'] in args or doall):
+            tomove = os.listdir(os.path.join(current, other['name']))
             for f in tomove:
                 try:
-                    shutil.move(os.path.join(current,dirs[dir]['name'],f),current)
+                    shutil.move(os.path.join(current, other['name'], f), current)
+                except OSError as e:
+                    print("Error: %s : %s" % (other['name'], e.strerror))
+            try:
+                os.rmdir(other['name'])
+            except OSError as e:
+                print("Error: %s : %s" % (dirs[dir]['name'], e.strerror))
+        for dir in dirs:
+            if os.path.isdir(dirs[dir]['name']) and (dir in args or doall):
+                tomove = os.listdir(os.path.join(current,dirs[dir]['name']))
+                for f in tomove:
+                    try:
+                        shutil.move(os.path.join(current,dirs[dir]['name'],f),current)
+                    except OSError as e:
+                        print("Error: %s : %s" % (dirs[dir]['name'], e.strerror))
+                try:
+                    os.rmdir(dirs[dir]['name'])
                 except OSError as e:
                     print("Error: %s : %s" % (dirs[dir]['name'], e.strerror))
-            try:
-                os.rmdir(dirs[dir]['name'])
-            except OSError as e:
-                print("Error: %s : %s" % (dirs[dir]['name'], e.strerror))
-    print("Reset done")
-
-def check():
-    print("Checking if the directories exist")
-    dest = ""
-    if not os.path.isdir(other['name']) and (other['arg'] in args or all in args):
-        os.mkdir(dest+other['name'])
-    for dir in dirs:
-        if not os.path.isdir(dirs[dir]['name']) and (dir in args or all in args):
-            os.mkdir(dest+dirs[dir]['name'])
-            print(dirs[dir]['name']+" created")
-    print("Checking completed")
-
-def sort():
-    #print("Sorting the files...")
-    for file in [file for file in files if not os.path.isdir(file) and not file == os.path.basename(sys.argv[0]) and not file == "config.yml" and not file =="filters.yml"]:
+        print("Reset done")
+    else:
+        print("Checking if the directories exist")
         dest = ""
+        if not os.path.isdir(other['name']) and (other['arg'] in args or all in args):
+            os.mkdir(dest+other['name'])
         for dir in dirs:
-            if dir in args or all in args:
-                for ex in dirs[dir]['ex']:
-                    if file.endswith(ex):
-                        dest = './' + str(dirs[dir]['name'])
-                        try:
-                            shutil.move(file, dest)
-                        except OSError as e:
-                            print("Error: %s : %s" % (dirs[dir]['name'], e.strerror))
-                        break
+            if not os.path.isdir(dirs[dir]['name']) and (dir in args or '-a' in args):
+                os.mkdir(dest+dirs[dir]['name'])
+                print(dirs[dir]['name']+" created")
+        print("Checking completed")
 
-        if dest == "" and (other['arg'] in args or all in args):
-            try:
-                shutil.move(file,'./'+other['arg'])
-            except OSError as e:
-                print("Error: %s : %s" % (dirs[dir]['name'], e.strerror))
-    #print("Sorting Completed...")
+        print("Sorting the files...")
+        for file in [file for file in files if not os.path.isdir(file) and not file == os.path.basename(__file__)]:
+            dest = ""
+            for dir in dirs:
+                if dir in args or all in args:
+                    for ex in dirs[dir]['ex']:
+                        if file.endswith(ex):
+                            dest = './' + str(dirs[dir]['name'])
+                            try:
+                                shutil.move(file, dest)
+                            except OSError as e:
+                                print("Error: %s : %s" % (dirs[dir]['name'], e.strerror))
+                            break
 
-def clear():
-    if os.name in ('nt','dos'):
-        subprocess.call("cls",shell=True)
-    elif os.name in ('linux','osx','posix'):
-        subprocess.call("clear",shell=True)
-    else:
-        print("\n") * 120
-#Main loop
-h = False
-args = []
-while True:
-    clear()
-    print("What do you want to do?")
-    print("-"+cfg['help']+" for help")
-    if h:
-        help()
-        h = False
-    args = input().replace(' ','').split('-')[1:]
-    if cfg['reset'] in args:
-        reset()
-    else:
-        files=os.listdir(current)
-        check()
-        sort()
-    if cfg['help'] in args:
-        h = True
-    if cfg['exit'] in args:
-        break
+            if dest == "" and (other['arg'] in args or all in args):
+                try:
+                    shutil.move(file,'./'+other['name'])
+                except OSError as e:
+                    print("Error: %s : %s" % (dirs[dir]['name'], e.strerror))
+
+        print("Sorting Completed...")
