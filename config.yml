@@ -1,0 +1,8 @@
+exit: e
+all : a
+reset: r
+other:
+  arg: o
+  name: Other
+  desc: "The rest goes here"
+help: h
