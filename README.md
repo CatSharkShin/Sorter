@@ -1,17 +1,17 @@
 # Sorter
 
-##Sorter.py
+## Sorter.py
 
-###Description
+### Description
 sorter.py uses arguments, run it without any to see the manual
 
-###How to Run
-*You need Python
+### How to Run
+* You need Python
 ```
 python sorter.py [args]
 ```
 
-###Examples
+### Examples
 sorts every file
 ```
 python sorter.py -a
@@ -25,16 +25,16 @@ to reset:(you can add -i -s etc to only reset those)
 python sorter.py -r
 ```
 
-##Exe Dir
-###Description
+## Exe Dir
+### Description
 * config.yml - essential args such as reset, exit
 * filters.yml - sorter.exe uses this to make folders and to filter the files. Priority:order
 * sorter.exe - This does the magic
-###How to Run
+### How to Run
 Run the .exe, type -h(default) for help
 
-##py with config files
-###Same as the exe you but you can run it as:
+## py with config files
+### Same as the exe you but you can run it as:
 ```
 python sorter.py
 ```
