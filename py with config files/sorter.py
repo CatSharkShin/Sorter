@@ -85,7 +85,7 @@ def sort():
 
         if dest == "" and (other['arg'] in args or all in args):
             try:
-                shutil.move(file,'./'+other['arg'])
+                shutil.move(file,'./'+other['name'])
             except OSError as e:
                 print("Error: %s : %s" % (dirs[dir]['name'], e.strerror))
     #print("Sorting Completed...")
