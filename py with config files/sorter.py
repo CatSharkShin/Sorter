@@ -68,6 +68,32 @@ def check():
             print(dirs[dir]['name']+" created")
     print("Checking completed")
 
+def incrementName(filename):
+    filename = list(filename)
+    i = len(filename)-1
+    while i >= 0 and not filename[i].isdigit():
+        i -= 1
+    if i >= 0:
+        #print("".join(map(str,filename))+": "+"num found at: "+str(i+1)+" num: "+filename[i])
+        return recursiveincrement(filename,i)
+    else:
+        rootext = os.path.splitext("".join(map(str,filename)))
+        return rootext[0]+"_1"+rootext[1]
+
+def recursiveincrement(filename,index):
+    if index >= 0 and filename[index].isdigit():
+        if int(filename[index]) == 9:
+            if index == 0 or not filename[index-1].isdigit():
+                filename[index] = 10
+            else:
+                filename[index] = 0
+            return recursiveincrement(filename,index-1)
+        else:
+            filename[index] = int(filename[index])+1
+            return "".join(map(str,filename))
+    else:
+        return "".join(map(str,filename))
+
 def sort():
     #print("Sorting the files...")
     for file in [file for file in files if not os.path.isdir(file) and not file == os.path.basename(sys.argv[0]) and not file == "config.yml" and not file =="filters.yml"]:
@@ -77,8 +103,11 @@ def sort():
                 for ex in dirs[dir]['ex']:
                     if file.endswith(ex):
                         dest = './' + str(dirs[dir]['name'])
+                        newfile = file
+                        while os.path.exists(dest+"/"+newfile):
+                            newfile= incrementName(newfile)
                         try:
-                            shutil.move(file, dest)
+                            shutil.move(file, dest+"/"+newfile)
                         except OSError as e:
                             print("Error: %s : %s" % (dirs[dir]['name'], e.strerror))
                         break
