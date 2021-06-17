@@ -36,13 +36,14 @@ def reset():
         tomove = os.listdir(os.path.join(current,other['name']))
         for f in tomove:
             try:
-                shutil.move(os.path.join(current,other['name'],f),current)
+                if not os.path.isdir(f):
+                    shutil.move(os.path.join(current,other['name'],f),os.path.join(current,f))
             except OSError as e:
-                print("Error: %s : %s" % (other['name'], e.strerror))
+                print("Move command:"+'move ' + os.path.join(current,other['name'],f) + ' ' + os.path.join(current,f)+"Error: %s : %s" % (other['name'], e.strerror))
         try:
             os.rmdir(other['name'])
         except OSError as e:
-            print("Error: %s : %s" % (dirs[dir]['name'], e.strerror))
+            print("Removing Folder "+"Error: %s : %s" % (other['name'], e.strerror))
     for dir in dirs:
         if os.path.isdir(dirs[dir]['name']) and (dir in args or doall):
             tomove = os.listdir(os.path.join(current,dirs[dir]['name']))
@@ -50,21 +51,21 @@ def reset():
                 try:
                     shutil.move(os.path.join(current,dirs[dir]['name'],f),current)
                 except OSError as e:
-                    print("Error: %s : %s" % (dirs[dir]['name'], e.strerror))
+                    print("Move Error: %s : %s" % (dirs[dir]['name'], e.strerror))
             try:
                 os.rmdir(dirs[dir]['name'])
             except OSError as e:
-                print("Error: %s : %s" % (dirs[dir]['name'], e.strerror))
+                print("Dir Remove Error: %s : %s" % (dirs[dir]['name'], e.strerror))
     print("Reset done")
 
 def check():
     print("Checking if the directories exist")
     dest = ""
     if not os.path.isdir(other['name']) and (other['arg'] in args or all in args):
-        os.mkdir(dest+other['name'])
+        os.mkdir(dest+other['name'],mode=0o777)
     for dir in dirs:
         if not os.path.isdir(dirs[dir]['name']) and (dir in args or all in args):
-            os.mkdir(dest+dirs[dir]['name'])
+            os.mkdir(dest+dirs[dir]['name'],mode=0o777)
             print(dirs[dir]['name']+" created")
     print("Checking completed")
 
@@ -126,11 +127,11 @@ def clear():
         subprocess.call("clear",shell=True)
     else:
         print("\n") * 120
+
 #Main loop
 h = False
 args = []
 while True:
-    clear()
     print("What do you want to do?")
     print("-"+cfg['help']+" for help")
     if h:
